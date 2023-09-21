@@ -4,7 +4,7 @@ Stupid simple logging for JS but with context for heavy log environments.
 
 This is just to only pass along a single logger instance between modules and have a hierarchical way to sort and display such modules.
 
-![image](https://github.com/Alex-Werner/hermodlog/assets/5849920/9fa24a24-fdbb-41c3-b5c1-6aa8abf75933)
+<img width="1365" alt="image" src="https://github.com/Alex-Werner/hermodlog/assets/5849920/347d8d00-8cb1-4838-bc5d-e7434fdd019b">
 
 
 ## Install
