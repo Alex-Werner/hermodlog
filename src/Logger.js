@@ -33,6 +33,12 @@ class Logger {
         console.log(message)
     }
 
+    clone() {
+        return new Logger({
+            level: this.level,
+            date: this.date,
+        })
+    }
 
 };
 

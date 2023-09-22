@@ -1,7 +1,7 @@
 import Logger from "../Logger.js";
 
 export default function  method(_method) {
-    const logger = new Logger(this.date);
+    const logger = this.clone();
     logger.moduleName = this.moduleName;
     logger.contextName = this.contextName;
     logger.listenerName = this.listenerName;
