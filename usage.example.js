@@ -19,6 +19,9 @@ const object = {
 }
 listenerLogger.method('processIncomingMessage').log('Received from ws client',object)
 
+listenerLogger.log(()=>'This is a function that returns a string')
+listenerLogger.log(1,2,3,4,5,6,7,8,9,10)
+
 class Car {
     constructor(props) {
         this.name = props.name;
@@ -36,8 +39,16 @@ listenerLogger.trace('Do not display me trace on error');
 listenerLogger.log('Do not display me log on error')
 listenerLogger.error('Do display me')
 listenerLogger.level = 'trace'
-listenerLogger.error('Error')
-listenerLogger.warn('Warn')
-listenerLogger.info('Info')
-listenerLogger.debug('debug')
-listenerLogger.trace('trace')
+listenerLogger.error('Error',object)
+listenerLogger.warn('Warn',object)
+listenerLogger.info('Info',object)
+listenerLogger.debug('debug',object)
+listenerLogger.trace('trace',object)
+
+const error = new Error('Something happened');
+listenerLogger.error('Error',error)
+listenerLogger.warn('Warn',error)
+listenerLogger.info('Info',error)
+listenerLogger.debug('debug',error)
+listenerLogger.trace('trace',error)
+

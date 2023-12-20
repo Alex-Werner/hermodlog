@@ -30,14 +30,28 @@ export default function trace(...args) {
     }
 
     for(let i = 0; i < args.length; i++){
-        if(typeof args[i] === 'object'){
-            const constructorName = args[i].constructor.name;
-            message += ` ${chalk.grey(`${constructorName}(`)}`
-            message += chalk.grey(JSON.stringify(args[i], null, 2))
-            message += ` ${chalk.grey(")")}`
-        }
-        if(typeof args[i] === 'string'){
-            message += chalk.grey(args[i])
+        const typeOfArg = typeof args[i];
+
+        switch (typeOfArg){
+            case 'object':
+                const constructorName = args[i].constructor.name;
+                message += ` ${chalk.grey(`${constructorName}(`)}`
+                if(constructorName === 'Error'){
+                    message += chalk.grey(JSON.stringify(args[i].message, null, 2))
+                }
+                message += chalk.grey(JSON.stringify(args[i], null, 2))
+                message += ` ${chalk.grey(")")}`
+                break;
+            case 'string':
+                message += chalk.grey(args[i])
+                break;
+            case "function":
+                message += chalk.grey(args[i].toString())
+                break;
+            case "number":
+            default:
+                message += chalk.grey(args[i])
+                break;
         }
     }
 

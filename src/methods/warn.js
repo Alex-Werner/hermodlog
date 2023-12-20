@@ -30,14 +30,29 @@ export default function warn(...args) {
     }
 
     for(let i = 0; i < args.length; i++){
-        if(typeof args[i] === 'object'){
-            const constructorName = args[i].constructor.name;
-            message += ` ${chalk.yellow(`${constructorName}(`)}`
-            message += chalk.yellow(JSON.stringify(args[i], null, 2))
-            message += ` ${chalk.yellow(")")}`
-        }
-        if(typeof args[i] === 'string'){
-            message += chalk.yellow(args[i])
+
+        const typeOfArg = typeof args[i];
+
+        switch (typeOfArg){
+            case 'object':
+                const constructorName = args[i].constructor.name;
+                message += ` ${chalk.yellow(`${constructorName}(`)}`
+                if(constructorName === 'Error'){
+                    message += chalk.yellow(JSON.stringify(args[i].message, null, 2))
+                }
+                message += chalk.yellow(JSON.stringify(args[i], null, 2))
+                message += ` ${chalk.yellow(")")}`
+                break;
+            case 'string':
+                message += chalk.yellow(args[i])
+                break;
+            case "function":
+                message += chalk.yellow(args[i].toString())
+                break;
+            case "number":
+            default:
+                message += chalk.yellow(args[i])
+                break;
         }
     }
 

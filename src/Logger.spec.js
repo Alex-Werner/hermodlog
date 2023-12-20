@@ -37,4 +37,15 @@ describe('Logger', () => {
 
         assert.equal(silentMethodLogger.history[0], '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m] module:\u001b[90mtest-module\u001b[39m | method: \u001b[33mtest-method\u001b[39m \u001b[32mHello\u001b[39m')
     })
+    it('should handle level', function () {
+        const levelLogger = new Logger({level: 'error'})
+        levelLogger.error('Hello');
+        assert.equal(levelLogger.history.length, 1)
+        levelLogger.warn('Hello');
+        assert.equal(levelLogger.history.length, 1)
+
+        levelLogger.level = 'info'
+        levelLogger.trace('Hello');
+        assert.equal(levelLogger.history.length, 1)
+    });
 })

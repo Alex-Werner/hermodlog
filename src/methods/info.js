@@ -30,15 +30,31 @@ export default function info(...args) {
     }
 
     for(let i = 0; i < args.length; i++){
-        if(typeof args[i] === 'object'){
-            const constructorName = args[i].constructor.name;
-            message += ` ${chalk.yellow(`${constructorName}(`)}`
-            message += chalk.yellow(JSON.stringify(args[i], null, 2))
-            message += ` ${chalk.yellow(")")}`
+
+        const typeOfArg = typeof args[i];
+
+        switch (typeOfArg){
+            case 'object':
+                const constructorName = args[i].constructor.name;
+                message += ` ${chalk.green(`${constructorName}(`)}`
+                if(constructorName === 'Error'){
+                    message += chalk.green(JSON.stringify(args[i].message, null, 2))
+                }
+                message += chalk.green(JSON.stringify(args[i], null, 2))
+                message += ` ${chalk.green(")")}`
+                break;
+            case 'string':
+                message += chalk.green(args[i])
+                break;
+            case "function":
+                message += chalk.green(args[i].toString())
+                break;
+            case "number":
+            default:
+                message += chalk.green(args[i])
+                break;
         }
-        if(typeof args[i] === 'string'){
-            message += chalk.green(args[i])
-        }
+
     }
 
     this.history.push(message);

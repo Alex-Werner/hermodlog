@@ -29,14 +29,29 @@ export default function error(...args) {
     }
 
     for(let i = 0; i < args.length; i++){
-        if(typeof args[i] === 'object'){
-            const constructorName = args[i].constructor.name;
-            message += ` ${chalk.red(`${constructorName}(`)}`
-            message += chalk.red(JSON.stringify(args[i], null, 2))
-            message += ` ${chalk.red(")")}`
-        }
-        if(typeof args[i] === 'string'){
-            message += chalk.red(args[i])
+
+        const typeOfArg = typeof args[i];
+
+        switch (typeOfArg){
+            case 'object':
+                const constructorName = args[i].constructor.name;
+                message += ` ${chalk.red(`${constructorName}(`)}`
+                if(constructorName === 'Error'){
+                    message += chalk.red(JSON.stringify(args[i].message, null, 2))
+                }
+                message += chalk.red(JSON.stringify(args[i], null, 2))
+                message += ` ${chalk.red(")")}`
+                break;
+            case 'string':
+                message += chalk.red(args[i])
+                break;
+            case "function":
+                message += chalk.red(args[i].toString())
+                break;
+            case "number":
+            default:
+                message += chalk.red(args[i])
+                break;
         }
     }
 
