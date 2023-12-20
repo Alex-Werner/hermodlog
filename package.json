@@ -1,6 +1,6 @@
 {
   "name": "hermodlog",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Simple contextual logger to simplify log display in heavy load context and provide easy parsing",
   "main": "src/Logger.js",
   "type": "module",

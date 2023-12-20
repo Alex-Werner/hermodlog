@@ -1,5 +1,7 @@
 # hermodlog
 
+[![npm version](https://badge.fury.io/js/hermodlog.svg)](https://badge.fury.io/js/hermodlog)
+
 Stupid simple logging for JS but with context for heavy log environments.
 
 This is just to only pass along a single logger instance between modules and have a hierarchical way to sort and display such modules.
