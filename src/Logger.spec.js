@@ -39,6 +39,7 @@ describe('Logger', () => {
     })
     it('should handle level', function () {
         const levelLogger = new Logger({level: 'error'})
+        levelLogger._log = () => {}
         levelLogger.error('Hello');
         assert.equal(levelLogger.history.length, 1)
         levelLogger.warn('Hello');

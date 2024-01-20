@@ -1,31 +1,11 @@
 import Logger from './src/Logger.js';
 
-
 const logger = new Logger({
     level: 'trace',
 });
 
-// {
-//     room: 'CANDLE',
-//         message: {
-//     payload: Candle {
-//         market: [Market],
-//             interval: '1m',
-//             open: '41303.70',
-//             close: '41305.60',
-//             low: '41301.00',
-//             high: '41308.50',
-//             volume: [Object],
-//             openTime: [Epoch],
-//             closeTime: [Epoch],
-//             trades: '223',
-//             id: '8e884b29'
-//     },
-//     topic: 'CANDLE'
-// }
-// }
 
-
+logger.context('APIContext').module('Websocket Server').listener('onMessage').method('processIncomingMessage').log('Hello World');
 
 const contextLogger = logger.context('APIContext')
 contextLogger.log('Started API');

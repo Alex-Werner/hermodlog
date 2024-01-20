@@ -1,8 +1,8 @@
 import Logger from "../Logger.js";
 
-export default function module(_module) {
+export default function object(_context) {
     const logger = this.clone();
-    logger.moduleName = _module;
+    logger.objectName = _context;
     logger._log = this._log.bind(logger);
     return logger;
 }

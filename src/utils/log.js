@@ -10,6 +10,9 @@ export default function log(level, args, context) {
         message = `[${colors[0](date.toISOString())}]`;
     }
 
+
+    // TODO: It would be neat to just have a single parents array that would be used
+    //  to generate the context string.
     if(context.contextName){
         message += ` context: ${colors[2](context.contextName)} |`;
     }
@@ -22,6 +25,10 @@ export default function log(level, args, context) {
     if(context.methodName){
         message += ` method: ${colors[5](context.methodName)} |`;
     }
+    if(context.objectName){
+        message += ` Object[${colors[6](context.objectName)}] |`;
+    }
+
     if(message.endsWith(' |')){
         message = message.slice(0, -1);
     }
