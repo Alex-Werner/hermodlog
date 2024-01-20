@@ -1,4 +1,22 @@
-// src/utils/log.js
+function safeStringify(obj, indent = 2, depth = 5, level = 0) {
+    let cache = [];
+    const retVal = JSON.stringify(
+        obj,
+        (key, value) => {
+            if (level > depth) return '...';
+            if (typeof value === "object" && value !== null) {
+                if (cache.includes(value)) return undefined; // Duplicate reference found, discard key
+                cache.push(value); // Store value in our collection
+                level++;
+            }
+            return value;
+        },
+        indent
+    );
+    cache = null;
+    return retVal;
+}
+
 export default function log(level, args, context) {
     const LOG_COLORS = context.LOG_COLORS;
     const colors = LOG_COLORS[level] || LOG_COLORS['info'];
@@ -41,10 +59,16 @@ export default function log(level, args, context) {
                 color = colors[6]; // object color
                 const constructorName = args[i].constructor.name;
                 message += ` ${color(`${constructorName}(`)}`
-                if(constructorName === 'Error'){
-                    message += color(JSON.stringify(args[i].message, null, 2))
+                try {
+                    if(constructorName === 'Error'){
+                        message += color(safeStringify(args[i].message, 3, 4))
+                    }
+                    message += color(safeStringify(args[i], 3, 4))
+                } catch (err) {
+                    // Probably a circular reference
+                    message += color(args[i].toString())
                 }
-                message += color(JSON.stringify(args[i], null, 2))
+
                 message += ` ${color(")")}`
                 break;
             case 'string':
