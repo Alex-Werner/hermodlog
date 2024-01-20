@@ -10,7 +10,10 @@ import method from "./methods/method.js";
 import module from "./methods/module.js";
 import trace from "./methods/trace.js";
 import warn from "./methods/warn.js";
+import fatal from "./methods/fatal.js";
+import child from "./methods/child.js";
 
+import LOG_COLORS from "./LOG_COLORS.js";
 class Logger {
     constructor(props = {}) {
         this.level = props.level ?? 'info';
@@ -27,6 +30,8 @@ class Logger {
         if (props.date) {
             this.date = props.date;
         }
+
+        this.LOG_COLORS = (props.colors) ?? LOG_COLORS;
     }
 
     _log(message) {
@@ -45,6 +50,7 @@ class Logger {
 Logger.prototype.context = context;
 Logger.prototype.debug = debug;
 Logger.prototype.error = error;
+Logger.prototype.fatal = fatal;
 Logger.prototype.info = info;
 Logger.prototype.listener = listener;
 Logger.prototype.log = log;
@@ -52,5 +58,6 @@ Logger.prototype.method = method;
 Logger.prototype.module = module;
 Logger.prototype.trace = trace;
 Logger.prototype.warn = warn;
+Logger.prototype.child = child;
 
 export default Logger;

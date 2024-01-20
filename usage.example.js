@@ -4,6 +4,29 @@ import Logger from './src/Logger.js';
 const logger = new Logger({
     level: 'trace',
 });
+
+// {
+//     room: 'CANDLE',
+//         message: {
+//     payload: Candle {
+//         market: [Market],
+//             interval: '1m',
+//             open: '41303.70',
+//             close: '41305.60',
+//             low: '41301.00',
+//             high: '41308.50',
+//             volume: [Object],
+//             openTime: [Epoch],
+//             closeTime: [Epoch],
+//             trades: '223',
+//             id: '8e884b29'
+//     },
+//     topic: 'CANDLE'
+// }
+// }
+
+
+
 const contextLogger = logger.context('APIContext')
 contextLogger.log('Started API');
 const moduleLogger = contextLogger.module('Websocket Server')
@@ -42,6 +65,7 @@ listenerLogger.level = 'trace'
 listenerLogger.error('Error',object)
 listenerLogger.warn('Warn',object)
 listenerLogger.info('Info',object)
+listenerLogger.fatal('Fatal',object)
 listenerLogger.debug('debug',object)
 listenerLogger.trace('trace',object)
 
@@ -49,6 +73,7 @@ const error = new Error('Something happened');
 listenerLogger.error('Error',error)
 listenerLogger.warn('Warn',error)
 listenerLogger.info('Info',error)
+listenerLogger.fatal('Fatal',error)
 listenerLogger.debug('debug',error)
 listenerLogger.trace('trace',error)
 
