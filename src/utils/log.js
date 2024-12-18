@@ -5,8 +5,8 @@ function safeStringify(obj, indent = 2, depth = 5, level = 0) {
         (key, value) => {
             if (level > depth) return '...';
             if (typeof value === "object" && value !== null) {
-                if (cache.includes(value)) return undefined; // Duplicate reference found, discard key
-                cache.push(value); // Store value in our collection
+                if (cache.includes(value)) return undefined;
+                cache.push(value);
                 level++;
             }
             return value;
@@ -22,73 +22,92 @@ export default function log(level, args, context) {
     const colors = LOG_COLORS[level] || LOG_COLORS['info'];
     const date = context.date || new Date();
     let type = level.toUpperCase()[0];
-    let message = `[${colors[0](date.toISOString())}][${colors[1](type)}]`;
+    let message = `[${colors[0](date.toISOString())}]`;
 
-    if(level === 'log'){
-        message = `[${colors[0](date.toISOString())}]`;
-    }
-
-
-    // TODO: It would be neat to just have a single parents array that would be used
-    //  to generate the context string.
-    if(context.contextName){
-        message += ` context: ${colors[2](context.contextName)} |`;
-    }
-    if(context.moduleName){
-        message += ` module:${colors[3](context.moduleName)} |`;
-    }
-    if(context.listenerName){
-        message += ` listener: ${colors[4](context.listenerName)} |`;
-    }
-    if(context.methodName){
-        message += ` method: ${colors[5](context.methodName)} |`;
-    }
-    if(context.objectName){
-        message += ` Object[${colors[6](context.objectName)}] |`;
+    if (level !== 'log') {
+        message += `[${colors[1](type)}]`;
     }
 
-    if(message.endsWith(' |')){
-        message = message.slice(0, -1);
+    if (context.contextName) {
+        message += ` context: ${colors[2](context.contextName)}`;
+        if (context.moduleName || context.listenerName || context.methodName) {
+            message += ' |';
+        }
+    }
+    
+    if (context.moduleName) {
+        message += ` module:${colors[3](context.moduleName)}`;
+        if (context.listenerName || context.methodName) {
+            message += ' |';
+        }
+    }
+    
+    if (context.listenerName) {
+        message += ` listener: ${colors[4](context.listenerName)}`;
+        if (context.methodName) {
+            message += ' |';
+        }
+    }
+    
+    if (context.methodName) {
+        message += ` method: ${colors[5](context.methodName)}`;
     }
 
-    for(let i = 0; i < args.length; i++){
-        const typeOfArg = typeof args[i];
+    if (context.objectName) {
+        message += ` Object[${colors[6](context.objectName)}]`;
+    }
+
+    message += ' ';
+
+    for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+        const typeOfArg = typeof arg;
         let color;
-        switch (typeOfArg){
-            case 'object':
-                color = colors[6]; // object color
-                const constructorName = args[i].constructor.name;
-                message += ` ${color(`${constructorName}(`)}`
-                try {
-                    if(constructorName === 'Error'){
-                        message += color(safeStringify(args[i].message, 3, 4))
-                    }
-                    message += color(safeStringify(args[i], 3, 4))
-                } catch (err) {
-                    // Probably a circular reference
-                    message += color(args[i].toString())
-                }
 
-                message += ` ${color(")")}`
+        switch (typeOfArg) {
+            case 'object':
+                color = colors[6];
+                if (!arg) {
+                    message += `${color('null')}`;
+                    break;
+                }
+                const constructorName = arg?.constructor?.name;
+                if (constructorName === 'Object') {
+                    message += `${color('Object(')}${color(safeStringify(arg, 2))}${color(')')}`;
+                } else if (constructorName === 'Error') {
+                    message += `${color(constructorName)}(${color(arg.message)})\n`;
+                    if (arg.stack) {
+                        const stackLines = arg.stack.split('\n');
+                        // Skip first line as it contains the error message we already logged
+                        for (let j = 1; j < stackLines.length; j++) {
+                            message += `${color(stackLines[j].trim())}\n`;
+                        }
+                    }
+                } else {
+                    message += `${color(constructorName)}(${color(safeStringify(arg, 2))})`;
+                }
                 break;
             case 'string':
-                color = colors[7]; // string color
-                message += color(args[i])
+                color = colors[7];
+                message += color(arg);
                 break;
             case "function":
-                color = colors[8]; // function color
-                message += color(args[i].toString())
+                color = colors[8];
+                message += color(arg.toString());
                 break;
-            case "number":
             default:
-                color = colors[9]; // number/default color
-                message += color(args[i])
+                color = colors[9];
+                message += color(String(arg));
                 break;
+        }
+        
+        if (i < args.length - 1) {
+            message += ' ';
         }
     }
 
     context.history.push(message);
-    if(context.history.length > 100){
+    if (context.history.length > 100) {
         context.history.shift();
     }
 
