@@ -18,24 +18,61 @@ import LOG_COLORS from "./LOG_COLORS.js";
 import object from "./methods/object.js";
 class Logger {
     constructor(props = {}) {
-        this.level = props.level ?? 'info';
+        // Define non-enumerable properties
+        Object.defineProperties(this, {
+            LOG_COLORS: {
+                value: props.colors ?? LOG_COLORS,
+                writable: true,
+                enumerable: false
+            },
+            history: {
+                value: props.history ?? [],
+                writable: true,
+                enumerable: false
+            },
+            level: {
+                value: props.level ?? 'info',
+                writable: true,
+                enumerable: true
+            },
+            contextName: {
+                value: props.contextName ?? null,
+                writable: true,
+                enumerable: true
+            },
+            methodName: {
+                value: props.methodName ?? null,
+                writable: true,
+                enumerable: true
+            },
+            moduleName: {
+                value: props.moduleName ?? null,
+                writable: true,
+                enumerable: true
+            },
+            listenerName: {
+                value: props.listenerName ?? null,
+                writable: true,
+                enumerable: true
+            },
+            objectName: {
+                value: props.objectName ?? null,
+                writable: true,
+                enumerable: true
+            }
+        });
+
+        if (props.date) {
+            Object.defineProperty(this, 'date', {
+                value: props.date,
+                writable: true,
+                enumerable: false
+            });
+        }
+
         if (!LOG_LEVELS.hasOwnProperty(this.level)) {
             throw new Error(`Unknown log level ${this.level}`)
         }
-
-        this.history = props.history ?? [];
-
-        this.contextName = props.contextName ?? null;
-        this.methodName = props.methodName ?? null;
-        this.moduleName = props.moduleName ?? null;
-        this.listenerName = props.listenerName ?? null;
-        this.objectName = props.objectName ?? null;
-
-        if (props.date) {
-            this.date = props.date;
-        }
-
-        this.LOG_COLORS = (props.colors) ?? LOG_COLORS;
     }
 
     _log(message) {
@@ -65,7 +102,6 @@ class Logger {
             objectName: (keepObject) ? this.objectName : opts.objectName ?? null,
         })
     }
-
 };
 
 Logger.prototype.context = context;
