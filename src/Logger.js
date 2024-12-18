@@ -2,6 +2,7 @@ import LOG_LEVELS from "./LOG_LEVELS.js";
 
 import context from "./methods/context.js";
 import debug from "./methods/debug.js";
+import dir from "./methods/dir.js";
 import error from "./methods/error.js";
 import info from "./methods/info.js";
 import listener from "./methods/listener.js";
@@ -69,6 +70,7 @@ class Logger {
 
 Logger.prototype.context = context;
 Logger.prototype.debug = debug;
+Logger.prototype.dir = dir;
 Logger.prototype.error = error;
 Logger.prototype.fatal = fatal;
 Logger.prototype.info = info;
