@@ -57,3 +57,9 @@ listenerLogger.fatal('Fatal',error)
 listenerLogger.debug('debug',error)
 listenerLogger.trace('trace',error)
 
+
+const errorWithStack = new Error('Something happened with stack');
+errorWithStack.stack = '\nThis is a stack trace with a new line \n and a tab \t';
+listenerLogger.error('Error',errorWithStack)
+
+console.dir(listenerLogger, { depth: null });

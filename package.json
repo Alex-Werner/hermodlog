@@ -1,6 +1,6 @@
 {
   "name": "hermodlog",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Simple contextual logger to simplify log display in heavy load context and provide easy parsing",
   "main": "src/Logger.js",
   "type": "module",
@@ -19,6 +19,6 @@
   },
   "homepage": "https://github.com/Alex-Werner/hermodlog#readme",
   "devDependencies": {
-    "vitest": "^0.34.5"
+    "vitest": "^2.1.8"
   }
 }

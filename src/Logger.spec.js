@@ -10,32 +10,36 @@ describe('Logger', () => {
         assert.equal(silentLogger.history.length, 0)
         silentLogger.log('Hello');
         assert.equal(silentLogger.history.length, 1)
-        assert.equal(silentLogger.history[0], '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m]\u001b[32mHello\u001b[39m')
+        const expected = '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[0m] \u001b[32mHello\u001b[0m'
+        assert.equal(silentLogger.history[0], expected)
     })
     it('should create an logger with module', () => {
         silentModuleLogger = silentLogger.module('test-module')
         silentModuleLogger.log('Hello');
         assert.equal(silentModuleLogger.history.length, 1)
-        assert.equal(silentModuleLogger.history[0], "[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m] module:\u001b[90mtest-module\u001b[39m \u001b[32mHello\u001b[39m")
+        const expected = '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[0m] module:\u001b[90mtest-module\u001b[0m \u001b[32mHello\u001b[0m'
+        assert.equal(silentModuleLogger.history[0], expected)
     })
     it('should create an logger with context', () => {
         const silentContextLogger = silentModuleLogger.context('test-context')
         silentContextLogger.log('Hello');
         assert.equal(silentContextLogger.history.length, 1)
-        assert.equal(silentContextLogger.history[0], "[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m] context: \u001b[94mtest-context\u001b[39m | module:\u001b[90mtest-module\u001b[39m \u001b[32mHello\u001b[39m")
+        const expected = '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[0m] context: \u001b[94mtest-context\u001b[0m | module:\u001b[90mtest-module\u001b[0m \u001b[32mHello\u001b[0m'
+        assert.equal(silentContextLogger.history[0], expected)
     })
     it('should create an logger with listener', () => {
         const silentListenerLogger = silentModuleLogger.listener('onTest')
         silentListenerLogger.log('Hello');
         assert.equal(silentListenerLogger.history.length, 1)
-        assert.equal(silentListenerLogger.history[0], "[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m] module:\u001b[90mtest-module\u001b[39m | listener: \u001b[36monTest\u001b[39m \u001b[32mHello\u001b[39m")
+        const expected = '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[0m] module:\u001b[90mtest-module\u001b[0m | listener: \u001b[36monTest\u001b[0m \u001b[32mHello\u001b[0m'
+        assert.equal(silentListenerLogger.history[0], expected)
     })
     it('should create an logger with method', () => {
         const silentMethodLogger = silentModuleLogger.method('test-method')
         silentMethodLogger.log('Hello');
         assert.equal(silentMethodLogger.history.length, 1)
-
-        assert.equal(silentMethodLogger.history[0], '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m] module:\u001b[90mtest-module\u001b[39m | method: \u001b[33mtest-method\u001b[39m \u001b[32mHello\u001b[39m')
+        const expected = '[\u001b[90m2023-07-29T01:38:00.482Z\u001b[0m] module:\u001b[90mtest-module\u001b[0m | method: \u001b[33mtest-method\u001b[0m \u001b[32mHello\u001b[0m'
+        assert.equal(silentMethodLogger.history[0], expected)
     })
     it('should handle level', function () {
         const levelLogger = new Logger({level: 'error'})
@@ -60,17 +64,7 @@ describe('Logger', () => {
         }
         silentModuleLogger.log('Received from ws client', object)
         assert.equal(silentModuleLogger.history.length, 2)
-        // If you change the styling of below it will assume spaces are part of the string
-        assert.equal(silentModuleLogger.history[1], `[\u001b[90m2023-07-29T01:38:00.482Z\u001b[39m] module:\u001b[90mtest-module\u001b[39m \u001b[32mReceived from ws client\u001b[39m \u001b[32mObject(\u001b[39m\u001b[32m{\u001b[39m
-\u001b[32m  "x": 42,\u001b[39m
-\u001b[32m  "y": {\u001b[39m
-\u001b[32m    "b": [\u001b[39m
-\u001b[32m      1,\u001b[39m
-\u001b[32m      2,\u001b[39m
-\u001b[32m      3\u001b[39m
-\u001b[32m    ]\u001b[39m
-\u001b[32m  },\u001b[39m
-\u001b[32m  "req": "getCar"\u001b[39m
-\u001b[32m}\u001b[39m \u001b[32m)\u001b[39m`)
+        const expected =  `[\u001b[90m2023-07-29T01:38:00.482Z\u001b[0m] module:\u001b[90mtest-module\u001b[0m \u001b[32mReceived from ws client\u001b[0m \u001b[32mObject(\u001b[0m\u001b[32m{\n  \"x\": 42,\n  \"y\": {\n    \"b\": [\n      1,\n      2,\n      3\n    ]\n  },\n  \"req\": \"getCar\"\n}\u001b[0m\u001b[32m)\u001b[0m`;
+        assert.equal(silentModuleLogger.history[1], expected)
     });
 })
