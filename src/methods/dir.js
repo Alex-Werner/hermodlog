@@ -6,5 +6,5 @@ export default function dir(label, object) {
         return;
     }
     log('log', [label], this);
-    console.dir(object, { depth: 1, colors: true });
+    // console.dir(object, { depth: 1, colors: true });
 } 

@@ -13,12 +13,13 @@ import trace from "./methods/trace.js";
 import warn from "./methods/warn.js";
 import fatal from "./methods/fatal.js";
 import child from "./methods/child.js";
-
+import submethod from "./methods/submethod.js";
+import submodule from "./methods/submodule.js";
+import handler from "./methods/handler.js";
 import LOG_COLORS from "./LOG_COLORS.js";
 import object from "./methods/object.js";
 class Logger {
     constructor(props = {}) {
-        // Define non-enumerable properties
         Object.defineProperties(this, {
             LOG_COLORS: {
                 value: props.colors ?? LOG_COLORS,
@@ -50,8 +51,23 @@ class Logger {
                 writable: true,
                 enumerable: true
             },
+            handlerName: {
+                value: props.handlerName ?? null,
+                writable: true,
+                enumerable: true
+            },
             listenerName: {
                 value: props.listenerName ?? null,
+                writable: true,
+                enumerable: true
+            },
+            submoduleName: {
+                value: props.submoduleName ?? null,
+                writable: true,
+                enumerable: true
+            },
+            submethodName: {
+                value: props.submethodName ?? null,
                 writable: true,
                 enumerable: true
             },
@@ -87,8 +103,11 @@ class Logger {
         const keepContext = opts?.keepContext ?? true;
         const keepMethod = opts?.keepMethod ?? true;
         const keepModule = opts?.keepModule ?? true;
+        const keepSubmethod = opts?.keepSubmethod ?? true;
+        const keepSubmodule = opts?.keepSubmodule ?? true;
         const keepListener = opts?.keepListener ?? true;
         const keepObject = opts?.keepObject ?? true;
+        const keepHandler = opts?.keepHandler ?? true;
 
         return new Logger({
             level: (keepLevel) ? this.level : opts.level ?? this.level,
@@ -98,8 +117,11 @@ class Logger {
             contextName: (keepContext) ? this.contextName : opts.contextName ?? null,
             methodName: (keepMethod) ? this.methodName : opts.methodName ?? null,
             moduleName: (keepModule) ? this.moduleName : opts.moduleName ?? null,
+            submoduleName: (keepSubmodule) ? this.submoduleName : opts.submoduleName ?? null,
             listenerName: (keepListener) ? this.listenerName : opts.listenerName ?? null,
+            submethodName: (keepSubmethod) ? this.submethodName : opts.submethodName ?? null,
             objectName: (keepObject) ? this.objectName : opts.objectName ?? null,
+            handlerName: (keepHandler) ? this.handlerName : opts.handlerName ?? null,
         })
     }
 };
@@ -114,9 +136,12 @@ Logger.prototype.listener = listener;
 Logger.prototype.log = log;
 Logger.prototype.method = method;
 Logger.prototype.object = object;
+Logger.prototype.submethod = submethod;
+Logger.prototype.submodule = submodule;
 Logger.prototype.module = module;
 Logger.prototype.trace = trace;
 Logger.prototype.warn = warn;
 Logger.prototype.child = child;
+Logger.prototype.handler = handler;
 
 export default Logger;

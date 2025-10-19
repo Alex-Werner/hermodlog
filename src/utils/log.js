@@ -4,6 +4,9 @@ function safeStringify(obj, indent = 2, depth = 5, level = 0) {
         obj,
         (key, value) => {
             if (level > depth) return '...';
+            if (typeof value === 'bigint') {
+                return value.toString();
+            }
             if (typeof value === "object" && value !== null) {
                 if (cache.includes(value)) return undefined;
                 cache.push(value);
@@ -28,36 +31,77 @@ export default function log(level, args, context) {
         message += `[${colors[1](type)}]`;
     }
 
-    if (context.contextName) {
+
+    const hasContext = !!context.contextName;
+    const hasModule = !!context.moduleName;
+    const hasHandler = !!context.handlerName;
+    const hasListener = !!context.listenerName;
+    const hasMethod = !!context.methodName;
+    const hasSubmethod = !!context.submethodName;
+    const hasSubmodule = !!context.submoduleName;
+    const hasObject = !!context.objectName;
+
+    if (hasContext) {
         message += ` context: ${colors[2](context.contextName)}`;
-        if (context.moduleName || context.listenerName || context.methodName) {
+        const hasNext = hasModule || hasHandler || hasListener || hasMethod || hasSubmethod || hasSubmodule;
+        if (hasNext) {
             message += ' |';
         }
     }
     
-    if (context.moduleName) {
+    if (hasModule) {
         message += ` module:${colors[3](context.moduleName)}`;
-        if (context.listenerName || context.methodName) {
+        const hasNext = hasHandler || hasListener || hasMethod || hasSubmethod || hasSubmodule;
+        if (hasNext) {
             message += ' |';
         }
-    }
-    
-    if (context.listenerName) {
-        message += ` listener: ${colors[4](context.listenerName)}`;
-        if (context.methodName) {
-            message += ' |';
-        }
-    }
-    
-    if (context.methodName) {
-        message += ` method: ${colors[5](context.methodName)}`;
     }
 
-    if (context.objectName) {
+    if (hasSubmodule) {
+        message += ` submodule: ${colors[6](context.submoduleName)}`;
+        const hasNext = hasHandler || hasListener || hasMethod || hasSubmethod;
+        if (hasNext) {
+            message += ' |';
+        }
+    }
+    
+    if (hasMethod) {
+        message += ` method: ${colors[5](context.methodName)}`;
+        const hasNext = hasHandler || hasSubmethod || hasSubmodule;
+        if (hasNext) {
+            message += ' |';
+        }
+    }
+
+    if (hasSubmethod) {
+        message += ` submethod: ${colors[6](context.submethodName)}`;
+        const hasNext = hasHandler || hasListener || hasMethod || hasSubmodule;
+        if (hasNext) {
+            message += ' |';
+        }
+    }
+
+    if (hasHandler) {
+        message += ` handler: ${colors[4](context.handlerName)}`;
+        const hasNext = hasListener || hasObject;
+        if (hasNext) {
+            message += ' |';
+        }
+    }
+
+    if (hasListener) {
+        message += ` listener: ${colors[4](context.listenerName)}`;
+        const hasNext = hasObject;
+        if (hasNext) {
+            message += ' |';
+        }
+    }
+
+    if (hasObject) {
         message += ` Object[${colors[6](context.objectName)}]`;
     }
 
-    message += ' ';
+    message += ' - ';
 
     for (let i = 0; i < args.length; i++) {
         const arg = args[i];
@@ -89,7 +133,23 @@ export default function log(level, args, context) {
                 break;
             case 'string':
                 color = colors[7];
-                message += color(arg);
+                // If the string contains [object Object], try to parse it as a potential object reference
+                if (arg.includes('[object Object]')) {
+                    // Extract the object from the current argument if it's a stringified object
+                    try {
+                        const potentialObj = JSON.parse(arg);
+                        if (typeof potentialObj === 'object' && potentialObj !== null) {
+                            message += `${color('Object(')}${color(safeStringify(potentialObj, 2))}${color(')')}`;
+                        } else {
+                            message += color(arg);
+                        }
+                    } catch (e) {
+                        // If it's not a valid JSON, just display as is
+                        message += color(arg);
+                    }
+                } else {
+                    message += color(arg);
+                }
                 break;
             case "function":
                 color = colors[8];
