@@ -166,9 +166,12 @@ export default function log(level, args, context) {
         }
     }
 
+    const historyLimit = context?.historyLimit;
+    if (historyLimit) {
     context.history.push(message);
-    if (context.history.length > 100) {
-        context.history.shift();
+        if (context.history.length > historyLimit) {
+            context.history.shift();
+        }
     }
 
     context._log(message);

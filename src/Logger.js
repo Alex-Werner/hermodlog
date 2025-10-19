@@ -31,6 +31,11 @@ class Logger {
                 writable: true,
                 enumerable: false
             },
+            historyLimit: {
+                value: props.historyLimit ?? 0,
+                writable: true,
+                enumerable: true
+            },
             level: {
                 value: props.level ?? 'info',
                 writable: true,
@@ -108,11 +113,13 @@ class Logger {
         const keepListener = opts?.keepListener ?? true;
         const keepObject = opts?.keepObject ?? true;
         const keepHandler = opts?.keepHandler ?? true;
+        const historyLimit = opts?.historyLimit ?? null;
 
         return new Logger({
             level: (keepLevel) ? this.level : opts.level ?? this.level,
             date: (keepDate) ? this.date : opts.date ?? null,
             history: keepHistory ? this.history : [],
+            historyLimit: historyLimit ?? this.historyLimit,
             colors: (keepColors) ? this.LOG_COLORS : opts.colors ?? this.LOG_COLORS,
             contextName: (keepContext) ? this.contextName : opts.contextName ?? null,
             methodName: (keepMethod) ? this.methodName : opts.methodName ?? null,
@@ -124,6 +131,34 @@ class Logger {
             handlerName: (keepHandler) ? this.handlerName : opts.handlerName ?? null,
         })
     }
+
+    getHistory(limit = 100, options = {}) {
+        let history = this.history;
+
+        // options.from Date: filter history from this date
+        if (options.fromDate) {
+            history = history.filter(item => {
+                const date = item.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
+                if (date) {
+                    return new Date(date[0]) >= options.fromDate;
+                }
+                return false;
+            });
+        }
+
+        if(options.toDate) {
+            history = history.filter(item => {
+                const date = item.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
+                if (date) {
+                    return new Date(date[0]) <= options.toDate;
+                }
+                return false;
+            });
+        }
+
+        return history.slice(-limit);
+    }
+
 };
 
 Logger.prototype.context = context;
